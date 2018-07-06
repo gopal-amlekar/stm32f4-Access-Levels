@@ -111,7 +111,6 @@ __main FUNCTION
 	ENDIF
 
 ; Writes to some special registers are ignored in unprivileged mode
-; Reads from these registers return zero
 	
 	MOV		R0, #0x01
 	
@@ -119,21 +118,26 @@ __main FUNCTION
 	MSR		PRIMASK, R0
 	MSR		FAULTMASK, R0
 	
-	MRS		R0, BASEPRI
-	MRS		R0, PRIMASK
-	MRS		R0, FAULTMASK
-
-
-; Similarly, the CPS instructions have no effect in unprivileged mode
+; CPS instructions to write to these registers have no effect in unprivileged mode
 
 	CPSIE	i
 	CPSID	i
 	CPSIE	f
 	CPSID	f
 
+; Reads from these registers return zero
+	MRS		R0, BASEPRI
+	MRS		R0, PRIMASK
+	MRS		R0, FAULTMASK
+
+
+
+
 ;Finally re-enable interrupts and faults
+	IF USE_SVC = {TRUE}
 	CPSIE	i
 	CPSIE	f
+	ENDIF
 
 ; Writing to SysTick control register 
 ; results in Fault in unprivileged mode

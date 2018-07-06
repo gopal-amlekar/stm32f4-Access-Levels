@@ -25,6 +25,9 @@
 	IMPORT	Service_Call_5
 	IMPORT	Service_Call_Default
 
+	EXPORT  SVC_Handler
+	EXPORT  SysTick_Handler
+	EXPORT	HardFault_Handler
 
 ;*********************************************************************
 ;* SVC exception handler
@@ -70,9 +73,7 @@
 	
 	
 SVC_Handler PROC
-	EXPORT  SVC_Handler
-	EXPORT  SysTick_Handler
-	EXPORT	HardFault_Handler
+
 		
 ; Extract the SVC parameter
 	TST		LR, #4

@@ -24,8 +24,8 @@ ARM Macro Assembler    Page 1
    12 00000000         ;*      - vectors to hard fault).
    13 00000000         ;*      - A service handler function (0x05) is provided 
                        to switch
-   14 00000000         ;*      - to privileged mode. Uncomment the call to SVC 
-                       0x05 and then
+   14 00000000         ;*      - to privileged mode. Set USE_SVC to TRUE and th
+                       en
    15 00000000         ;*      - rebuild the code and try again. Systick should
                         start working and
    16 00000000         ;*      - blink LED at PD12 on STM32F4 Discovery Board.
@@ -91,208 +91,214 @@ ARM Macro Assembler    Page 2
    24 00000000         
    25 00000000                 END
    19 00000000         
-   20 00000000         ;USE_SVC EQU 0
+   20 00000000                 GBLL             USE_SVC
    21 00000000         
-   22 00000000                 GBLL             USE_SVC
-   23 00000000 TRUE     
-                       USE_SVC SETL             {TRUE}
-   24 00000000         
-   25 00000000         ; Export functions so they can be called from other file
-                       
+   22 00000000         ;*******************************************************
+                       **************  
+   23 00000000         ; * To switch to privileged level, Set USE_SVC to TRUE a
+                       nd rebuild the code
+   24 00000000 FALSE    
+                       USE_SVC SETL             {FALSE}
+   25 00000000         ;*******************************************************
+                       **************
    26 00000000         
-   27 00000000                 EXPORT           SystemInit
-   28 00000000                 EXPORT           __main
-   29 00000000         
-   30 00000000                 AREA             MYCODE, CODE, READONLY
+   27 00000000         ; Export functions so they can be called from other file
+                       
+   28 00000000         
+   29 00000000                 EXPORT           SystemInit
+   30 00000000                 EXPORT           __main
    31 00000000         
-   32 00000000         ; ******* Function SystemInit *******
-   33 00000000         ; * Called from startup code
-   34 00000000         ; * Calls - None
-   35 00000000         ; * Enables GPIO clock 
-   36 00000000         ; * Configures GPIO-D Pins 12 to 15 as:
-   37 00000000         ; ** Output
-   38 00000000         ; ** Push-pull (Default configuration)
-   39 00000000         ; ** High speed
-   40 00000000         ; ** Pull-up enabled
-   41 00000000         
-   42 00000000         ; **************************
+   32 00000000                 AREA             MYCODE, CODE, READONLY
+   33 00000000         
+   34 00000000         ; ******* Function SystemInit *******
+   35 00000000         ; * Called from startup code
+   36 00000000         ; * Calls - None
+   37 00000000         ; * Enables GPIO clock 
+   38 00000000         ; * Configures GPIO-D Pins 12 to 15 as:
+   39 00000000         ; ** Output
+   40 00000000         ; ** Push-pull (Default configuration)
+   41 00000000         ; ** High speed
+   42 00000000         ; ** Pull-up enabled
    43 00000000         
-   44 00000000         SystemInit
-                               FUNCTION
+   44 00000000         ; **************************
    45 00000000         
-   46 00000000         ; Enable GPIO clock
-   47 00000000 4921            LDR              R1, =RCC_AHB1ENR ;Pseudo-load a
+   46 00000000         SystemInit
+                               FUNCTION
+   47 00000000         
+   48 00000000         ; Enable GPIO clock
+   49 00000000 4920            LDR              R1, =RCC_AHB1ENR ;Pseudo-load a
                                                             ddress in R1
-   48 00000002 6808            LDR              R0, [R1]    ;Copy contents at a
-                                                            ddress in R1 to R0
-   49 00000004 F040 0008       ORR.W            R0, #0x08   ;Bitwise OR entire 
-                                                            word in R0, result 
-                                                            in R0
 
 
 
 ARM Macro Assembler    Page 3 
 
 
-   50 00000008 6008            STR              R0, [R1]    ;Store R0 contents 
+   50 00000002 6808            LDR              R0, [R1]    ;Copy contents at a
+                                                            ddress in R1 to R0
+   51 00000004 F040 0008       ORR.W            R0, #0x08   ;Bitwise OR entire 
+                                                            word in R0, result 
+                                                            in R0
+   52 00000008 6008            STR              R0, [R1]    ;Store R0 contents 
                                                             to address in R1
-   51 0000000A         
-   52 0000000A         ; Set mode as output
-   53 0000000A 4920            LDR              R1, =GPIOD_MODER ;Two bits per 
+   53 0000000A         
+   54 0000000A         ; Set mode as output
+   55 0000000A 491F            LDR              R1, =GPIOD_MODER ;Two bits per 
                                                             pin so bits 24 to 3
                                                             1 control pins 12 t
                                                             o 15
-   54 0000000C 6808            LDR              R0, [R1]
-   55 0000000E F040 40AA       ORR.W            R0, #0x55000000 ;Mode bits set 
+   56 0000000C 6808            LDR              R0, [R1]
+   57 0000000E F040 40AA       ORR.W            R0, #0x55000000 ;Mode bits set 
                                                             to '01' makes the p
                                                             in mode as output
-   56 00000012 F020 402A       AND.W            R0, #0x55FFFFFF ;OR and AND bot
+   58 00000012 F020 402A       AND.W            R0, #0x55FFFFFF ;OR and AND bot
                                                             h operations reqd f
                                                             or 2 bits
-   57 00000016 6008            STR              R0, [R1]
-   58 00000018         
-   59 00000018         ; Set type as push-pull (Default)
-   60 00000018 491D            LDR              R1, =GPIOD_OTYPER ;Type bit '0'
+   59 00000016 6008            STR              R0, [R1]
+   60 00000018         
+   61 00000018         ; Set type as push-pull (Default)
+   62 00000018 491C            LDR              R1, =GPIOD_OTYPER ;Type bit '0'
                                                              configures pin for
                                                              push-pull
-   61 0000001A 6808            LDR              R0, [R1]
-   62 0000001C F420 4070       AND.W            R0, #0xFFFF0FFF
-   63 00000020 6008            STR              R0, [R1]
-   64 00000022         
-   65 00000022         ; Set Speed slow
-   66 00000022 491C            LDR              R1, =GPIOD_OSPEEDR ;Two bits pe
+   63 0000001A 6808            LDR              R0, [R1]
+   64 0000001C F420 4070       AND.W            R0, #0xFFFF0FFF
+   65 00000020 6008            STR              R0, [R1]
+   66 00000022         
+   67 00000022         ; Set Speed slow
+   68 00000022 491B            LDR              R1, =GPIOD_OSPEEDR ;Two bits pe
                                                             r pin so bits 24 to
                                                              31 control pins 12
                                                              to 15
-   67 00000024 6808            LDR              R0, [R1]
-   68 00000026 F020 407F       AND.W            R0, #0x00FFFFFF ;Speed bits set
+   69 00000024 6808            LDR              R0, [R1]
+   70 00000026 F020 407F       AND.W            R0, #0x00FFFFFF ;Speed bits set
                                                              to '00' configures
                                                              pin for slow speed
                                                             
-   69 0000002A 6008            STR              R0, [R1]
-   70 0000002C         
-   71 0000002C         ; Set pull-up
-   72 0000002C 491A            LDR              R1, =GPIOD_PUPDR ;Two bits per 
+   71 0000002A 6008            STR              R0, [R1]
+   72 0000002C         
+   73 0000002C         ; Set pull-up
+   74 0000002C 4919            LDR              R1, =GPIOD_PUPDR ;Two bits per 
                                                             pin so bits 24 to 3
                                                             1 control pins 12 t
                                                             o 15
-   73 0000002E 6808            LDR              R0, [R1]
-   74 00000030 F020 407F       AND.W            R0, #0x00FFFFFF ;Clear bits to 
+   75 0000002E 6808            LDR              R0, [R1]
+   76 00000030 F020 407F       AND.W            R0, #0x00FFFFFF ;Clear bits to 
                                                             disable pullup/pull
                                                             down
-   75 00000034 6008            STR              R0, [R1]
-   76 00000036         
-   77 00000036 4770            BX               LR          ;Return from functi
+   77 00000034 6008            STR              R0, [R1]
+   78 00000036         
+   79 00000036 4770            BX               LR          ;Return from functi
                                                             on
-   78 00000038         
-   79 00000038                 ENDFUNC
    80 00000038         
-   81 00000038         
-   82 00000038         ; ******* Function main *******
-   83 00000038         ;* Called from startup code after SystemInit
-   84 00000038         ;* Never returns. 
-   85 00000038         ;* Starts in unprivileged mode.
-   86 00000038         ;* See the comment block at top of this file for details
+   81 00000038                 ENDFUNC
+   82 00000038         
+   83 00000038         
 
 
 
 ARM Macro Assembler    Page 4 
 
 
+   84 00000038         ; ******* Function main *******
+   85 00000038         ;* Called from startup code after SystemInit
+   86 00000038         ;* Never returns. 
+   87 00000038         ;* Starts in unprivileged mode.
+   88 00000038         ;* See the comment block at top of this file for details
                        
-   87 00000038         ;* Debug the code step by step and observe registers val
+   89 00000038         ;* Debug the code step by step and observe registers val
                        ues.
-   88 00000038         ;* such as PRIMASK, FAULTMASK, BASEPRI and CONTROL
-   89 00000038         ; **************************
-   90 00000038         
-   91 00000038         __main  FUNCTION
+   90 00000038         ;* such as PRIMASK, FAULTMASK, BASEPRI and CONTROL
+   91 00000038         ; **************************
    92 00000038         
-   93 00000038         
+   93 00000038         __main  FUNCTION
    94 00000038         
-   95 00000038         ; Start in unprivileged mode
-   96 00000038 F04F 0001       MOV              R0, #01
-   97 0000003C F380 8814       MSR              CONTROL, R0
-   98 00000040         
-   99 00000040         
-  100 00000040         ; Getting back to privileged mode via 
-  101 00000040         ; write to CONTROL register isn't possible now
-  102 00000040         ; Writes to CONTROL register are simply ignored
-  103 00000040 F04F 0000       MOV              R0, #0x00
-  104 00000044 F380 8814       MSR              CONTROL, R0
-  105 00000048         
-  106 00000048         ; Correct way of switching back to privileged level
-  107 00000048                 IF               USE_SVC = {TRUE}
-  108 00000048 DF05            SVC              #0x05
-  109 0000004A                 ENDIF
-  110 0000004A         
-  111 0000004A         ; Writes to some special registers are ignored in unpriv
+   95 00000038         
+   96 00000038         
+   97 00000038         ; Start in unprivileged mode
+   98 00000038 F04F 0001       MOV              R0, #01
+   99 0000003C F380 8814       MSR              CONTROL, R0
+  100 00000040         
+  101 00000040         
+  102 00000040         ; Getting back to privileged mode via 
+  103 00000040         ; write to CONTROL register isn't possible now
+  104 00000040         ; Writes to CONTROL register are simply ignored
+  105 00000040 F04F 0000       MOV              R0, #0x00
+  106 00000044 F380 8814       MSR              CONTROL, R0
+  107 00000048         
+  108 00000048         ; Correct way of switching back to privileged level
+  109 00000048                 IF               USE_SVC = {TRUE}
+  111                          ENDIF
+  112 00000048         
+  113 00000048         ; Writes to some special registers are ignored in unpriv
                        ileged mode
-  112 0000004A         ; Reads from these registers return zero
-  113 0000004A         
-  114 0000004A F04F 0001       MOV              R0, #0x01
-  115 0000004E         
-  116 0000004E F380 8811       MSR              BASEPRI, R0
-  117 00000052 F380 8810       MSR              PRIMASK, R0
-  118 00000056 F380 8813       MSR              FAULTMASK, R0
-  119 0000005A         
-  120 0000005A F3EF 8011       MRS              R0, BASEPRI
-  121 0000005E F3EF 8010       MRS              R0, PRIMASK
-  122 00000062 F3EF 8013       MRS              R0, FAULTMASK
-  123 00000066         
-  124 00000066         
-  125 00000066         ; Similarly, the CPS instructions have no effect in unpr
-                       ivileged mode
-  126 00000066         
-  127 00000066 B662            CPSIE            i
-  128 00000068 B672            CPSID            i
-  129 0000006A B661            CPSIE            f
-  130 0000006C B671            CPSID            f
-  131 0000006E         
-  132 0000006E         ;Finally re-enable interrupts and faults
-  133 0000006E B662            CPSIE            i
-  134 00000070 B661            CPSIE            f
-  135 00000072         
-  136 00000072         ; Writing to SysTick control register 
-  137 00000072         ; results in Fault in unprivileged mode
-  138 00000072         
-  139 00000072 490A            LDR              R1, =SYSTICK_RELOADR
-  140 00000074 4A0A            LDR              R2, =SYST_RELOAD_500MS
-  141 00000076 600A            STR              R2, [R1]
+  114 00000048         
+  115 00000048 F04F 0001       MOV              R0, #0x01
+  116 0000004C         
+  117 0000004C F380 8811       MSR              BASEPRI, R0
+  118 00000050 F380 8810       MSR              PRIMASK, R0
+  119 00000054 F380 8813       MSR              FAULTMASK, R0
+  120 00000058         
+  121 00000058         ; CPS instructions to write to these registers have no e
+                       ffect in unprivileged mode
+  122 00000058         
+  123 00000058 B662            CPSIE            i
+  124 0000005A B672            CPSID            i
+  125 0000005C B661            CPSIE            f
+  126 0000005E B671            CPSID            f
+  127 00000060         
+  128 00000060         ; Reads from these registers return zero
+  129 00000060 F3EF 8011       MRS              R0, BASEPRI
+  130 00000064 F3EF 8010       MRS              R0, PRIMASK
+  131 00000068 F3EF 8013       MRS              R0, FAULTMASK
+  132 0000006C         
+  133 0000006C         
+  134 0000006C         
+  135 0000006C         
+  136 0000006C         ;Finally re-enable interrupts and faults
+  137 0000006C                 IF               USE_SVC = {TRUE}
+  140                          ENDIF
+  141 0000006C         
 
 
 
 ARM Macro Assembler    Page 5 
 
 
-  142 00000078         
-  143 00000078         
-  144 00000078         ; Writing to SysTick reload register 
-  145 00000078         ; results in Fault in unprivileged mode
-  146 00000078         
-  147 00000078 F04F 0700       MOV              R7, #0x00
-  148 0000007C         
-  149 0000007C 4909            LDR              R1, =SYSTICK_CONTROLR
-  150 0000007E 6808            LDR              R0, [R1]
-  151 00000080 F040 0007       ORR.W            R0, #ENABLE_SYSTICK
-  152 00000084 6008            STR              R0, [R1]
-  153 00000086         
-  154 00000086         
-  155 00000086 E7FE            B                .
-  156 00000088         
-  157 00000088                 ENDFUNC
-  158 00000088         
-  159 00000088                 ALIGN
-  160 00000088 007A1200 
+  142 0000006C         ; Writing to SysTick control register 
+  143 0000006C         ; results in Fault in unprivileged mode
+  144 0000006C         
+  145 0000006C 490A            LDR              R1, =SYSTICK_RELOADR
+  146 0000006E 4A0B            LDR              R2, =SYST_RELOAD_500MS
+  147 00000070 600A            STR              R2, [R1]
+  148 00000072         
+  149 00000072         
+  150 00000072         ; Writing to SysTick reload register 
+  151 00000072         ; results in Fault in unprivileged mode
+  152 00000072         
+  153 00000072 F04F 0700       MOV              R7, #0x00
+  154 00000076         
+  155 00000076 490A            LDR              R1, =SYSTICK_CONTROLR
+  156 00000078 6808            LDR              R0, [R1]
+  157 0000007A F040 0007       ORR.W            R0, #ENABLE_SYSTICK
+  158 0000007E 6008            STR              R0, [R1]
+  159 00000080         
+  160 00000080         
+  161 00000080 E7FE            B                .
+  162 00000082         
+  163 00000082                 ENDFUNC
+  164 00000082         
+  165 00000082 00 00           ALIGN
+  166 00000084 007A1200 
                        SYST_RELOAD_500MS
                                EQU              0x007A1200
-  161 00000088 00F42400 
+  167 00000084 00F42400 
                        SYST_RELOAD_1000MS
                                EQU              0X00F42400
-  162 00000088 00000007 
+  168 00000084 00000007 
                        ENABLE_SYSTICK
                                EQU              0x07
-  163 00000088         
-  164 00000088                 END
+  169 00000084         
+  170 00000084                 END
               40023830 
               40020C00 
               40020C04 
@@ -317,7 +323,7 @@ MYCODE 00000000
 
 Symbol: MYCODE
    Definitions
-      At line 30 in file ..\src\main.s
+      At line 32 in file ..\src\main.s
    Uses
       None
 Comment: MYCODE unused
@@ -325,17 +331,17 @@ SystemInit 00000000
 
 Symbol: SystemInit
    Definitions
-      At line 44 in file ..\src\main.s
+      At line 46 in file ..\src\main.s
    Uses
-      At line 27 in file ..\src\main.s
+      At line 29 in file ..\src\main.s
 Comment: SystemInit used once
 __main 00000038
 
 Symbol: __main
    Definitions
-      At line 91 in file ..\src\main.s
+      At line 93 in file ..\src\main.s
    Uses
-      At line 28 in file ..\src\main.s
+      At line 30 in file ..\src\main.s
 Comment: __main used once
 3 symbols
 
@@ -348,9 +354,9 @@ ENABLE_SYSTICK 00000007
 
 Symbol: ENABLE_SYSTICK
    Definitions
-      At line 162 in file ..\src\main.s
+      At line 168 in file ..\src\main.s
    Uses
-      At line 151 in file ..\src\main.s
+      At line 157 in file ..\src\main.s
 Comment: ENABLE_SYSTICK used once
 GPIOD_BSRR 40020C18
 
@@ -366,7 +372,7 @@ Symbol: GPIOD_MODER
    Definitions
       At line 9 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 53 in file ..\src\main.s
+      At line 55 in file ..\src\main.s
 Comment: GPIOD_MODER used once
 GPIOD_ODR 40020C14
 
@@ -382,7 +388,7 @@ Symbol: GPIOD_OSPEEDR
    Definitions
       At line 11 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 66 in file ..\src\main.s
+      At line 68 in file ..\src\main.s
 Comment: GPIOD_OSPEEDR used once
 GPIOD_OTYPER 40020C04
 
@@ -390,7 +396,7 @@ Symbol: GPIOD_OTYPER
    Definitions
       At line 10 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 60 in file ..\src\main.s
+      At line 62 in file ..\src\main.s
 Comment: GPIOD_OTYPER used once
 GPIOD_PUPDR 40020C0C
 
@@ -398,7 +404,7 @@ Symbol: GPIOD_PUPDR
    Definitions
       At line 12 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 72 in file ..\src\main.s
+      At line 74 in file ..\src\main.s
 Comment: GPIOD_PUPDR used once
 RCC_AHB1ENR 40023830
 
@@ -412,7 +418,7 @@ Absolute symbols
    Definitions
       At line 6 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 47 in file ..\src\main.s
+      At line 49 in file ..\src\main.s
 Comment: RCC_AHB1ENR used once
 SYSTICK_CONTROLR E000E010
 
@@ -420,7 +426,7 @@ Symbol: SYSTICK_CONTROLR
    Definitions
       At line 18 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 149 in file ..\src\main.s
+      At line 155 in file ..\src\main.s
 Comment: SYSTICK_CONTROLR used once
 SYSTICK_RELOADR E000E014
 
@@ -428,13 +434,13 @@ Symbol: SYSTICK_RELOADR
    Definitions
       At line 19 in file ..\src\reg_stm32f407xx.inc
    Uses
-      At line 139 in file ..\src\main.s
+      At line 145 in file ..\src\main.s
 Comment: SYSTICK_RELOADR used once
 SYST_RELOAD_1000MS 00F42400
 
 Symbol: SYST_RELOAD_1000MS
    Definitions
-      At line 161 in file ..\src\main.s
+      At line 167 in file ..\src\main.s
    Uses
       None
 Comment: SYST_RELOAD_1000MS unused
@@ -442,9 +448,9 @@ SYST_RELOAD_500MS 007A1200
 
 Symbol: SYST_RELOAD_500MS
    Definitions
-      At line 160 in file ..\src\main.s
+      At line 166 in file ..\src\main.s
    Uses
-      At line 140 in file ..\src\main.s
+      At line 146 in file ..\src\main.s
 Comment: SYST_RELOAD_500MS used once
 12 symbols
 352 symbols in table

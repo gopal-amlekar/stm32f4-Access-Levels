@@ -1,7 +1,7 @@
 Dependencies for Project 'stm32f4-access-levels', Target 'Target 1': (DO NOT MODIFY !)
 F (..\src\isr.s)(0x5B2CC200)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 524" --pd "STM32F407xx SETA 1"--list .\listings\isr.lst --xref -o .\objects\isr.o --depend .\objects\isr.d)
 I (..\src\reg_stm32f407xx.inc)(0x5B2CC2CB)
-F (..\src\main.s)(0x5B2CC798)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 524" --pd "STM32F407xx SETA 1"--list .\listings\main.lst --xref -o .\objects\main.o --depend .\objects\main.d)
+F (..\src\main.s)(0x5B3EF08E)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 524" --pd "STM32F407xx SETA 1"--list .\listings\main.lst --xref -o .\objects\main.o --depend .\objects\main.d)
 I (..\src\reg_stm32f407xx.inc)(0x5B2CC2CB)
 F (..\src\service.s)(0x5B2CC1D8)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 524" --pd "STM32F407xx SETA 1"--list .\listings\service.lst --xref -o .\objects\service.o --depend .\objects\service.d)
 I (..\src\reg_stm32f407xx.inc)(0x5B2CC2CB)

@@ -37,10 +37,10 @@ Image Symbol Table
     .text                                    0x080001c8   Section        0  heapauxi.o(.text)
     ISRCODE                                  0x080001d0   Section      132  isr.o(ISRCODE)
     $v0                                      0x080001d0   Number         0  isr.o(ISRCODE)
-    MYCODE                                   0x08000254   Section      168  main.o(MYCODE)
+    MYCODE                                   0x08000254   Section      164  main.o(MYCODE)
     $v0                                      0x08000254   Number         0  main.o(MYCODE)
-    SERVICECODE                              0x080002fc   Section       76  service.o(SERVICECODE)
-    $v0                                      0x080002fc   Number         0  service.o(SERVICECODE)
+    SERVICECODE                              0x080002f8   Section       76  service.o(SERVICECODE)
+    $v0                                      0x080002f8   Number         0  service.o(SERVICECODE)
     HEAP                                     0x20000000   Section      512  startup_stm32f407xx.o(HEAP)
     Heap_Mem                                 0x20000000   Data         512  startup_stm32f407xx.o(HEAP)
     STACK                                    0x20000200   Section     1024  startup_stm32f407xx.o(STACK)
@@ -151,13 +151,13 @@ Image Symbol Table
     SysTick_Handler                          0x08000215   Thumb Code    22  isr.o(ISRCODE)
     HardFault_Handler                        0x0800022b   Thumb Code     8  isr.o(ISRCODE)
     SystemInit                               0x08000255   Thumb Code    56  main.o(MYCODE)
-    __main                                   0x0800028d   Thumb Code    80  main.o(MYCODE)
-    Service_Call_1                           0x080002fd   Thumb Code     8  service.o(SERVICECODE)
-    Service_Call_2                           0x08000305   Thumb Code     8  service.o(SERVICECODE)
-    Service_Call_3                           0x0800030d   Thumb Code     8  service.o(SERVICECODE)
-    Service_Call_4                           0x08000315   Thumb Code     8  service.o(SERVICECODE)
-    Service_Call_5                           0x0800031d   Thumb Code    10  service.o(SERVICECODE)
-    Service_Call_Default                     0x08000327   Thumb Code     8  service.o(SERVICECODE)
+    __main                                   0x0800028d   Thumb Code    74  main.o(MYCODE)
+    Service_Call_1                           0x080002f9   Thumb Code     8  service.o(SERVICECODE)
+    Service_Call_2                           0x08000301   Thumb Code     8  service.o(SERVICECODE)
+    Service_Call_3                           0x08000309   Thumb Code     8  service.o(SERVICECODE)
+    Service_Call_4                           0x08000311   Thumb Code     8  service.o(SERVICECODE)
+    Service_Call_5                           0x08000319   Thumb Code    10  service.o(SERVICECODE)
+    Service_Call_Default                     0x08000323   Thumb Code     8  service.o(SERVICECODE)
 
 
 
@@ -167,9 +167,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x00000348, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x08000000, Size: 0x00000344, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00000348, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00000344, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -178,16 +178,16 @@ Memory Map of the image
     0x080001c8   0x080001c8   0x00000006   Code   RO           24    .text               c_w.l(heapauxi.o)
     0x080001ce   0x080001ce   0x00000002   PAD
     0x080001d0   0x080001d0   0x00000084   Code   RO            1    ISRCODE             isr.o
-    0x08000254   0x08000254   0x000000a8   Code   RO            7    MYCODE              main.o
-    0x080002fc   0x080002fc   0x0000004c   Code   RO           11    SERVICECODE         service.o
+    0x08000254   0x08000254   0x000000a4   Code   RO            7    MYCODE              main.o
+    0x080002f8   0x080002f8   0x0000004c   Code   RO           11    SERVICECODE         service.o
 
 
-    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x08000348, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x08000344, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
 
     **** No section assigned to this execution region ****
 
 
-    Execution Region ER_ZI (Exec base: 0x20000000, Load base: 0x08000348, Size: 0x00000600, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Exec base: 0x20000000, Load base: 0x08000344, Size: 0x00000600, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -203,12 +203,12 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
        132         34          0          0          0        524   isr.o
-       168         32          0          0          0        456   main.o
+       164         34          0          0          0        456   main.o
         76         26          0          0          0        620   service.o
         64         26        392          0       1536        836   startup_stm32f407xx.o
 
     ----------------------------------------------------------------------
-       440        118        392          0       1536       2436   Object Totals
+       436        120        392          0       1536       2436   Object Totals
          0          0          0          0          0          0   (incl. Generated)
          0          0          0          0          0          0   (incl. Padding)
 
@@ -238,15 +238,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-       448        118        392          0       1536       2288   Grand Totals
-       448        118        392          0       1536       2288   ELF Image Totals
-       448        118        392          0          0          0   ROM Totals
+       444        120        392          0       1536       2288   Grand Totals
+       444        120        392          0       1536       2288   ELF Image Totals
+       444        120        392          0          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                  840 (   0.82kB)
+    Total RO  Size (Code + RO Data)                  836 (   0.82kB)
     Total RW  Size (RW Data + ZI Data)              1536 (   1.50kB)
-    Total ROM Size (Code + RO Data + RW Data)        840 (   0.82kB)
+    Total ROM Size (Code + RO Data + RW Data)        836 (   0.82kB)
 
 ==============================================================================
 
